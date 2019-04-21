@@ -29,82 +29,82 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    EditText tituloP, añoP, generoP,directorP;
-    Button insertarP,eliminarP;
+public class Main2Activity extends AppCompatActivity {
+    EditText nombreD,edadD,generoD,experienciaD;
+    Button insertarD,eliminarD;
     DatabaseReference servicioRealtime;
-    ListView lista;
-    List<Pelicula> datosConsultaPelicula;
+    ListView lista1;
+    List<Director> datosConsultaDirectores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        tituloP = findViewById(R.id.tituloP);
-        añoP = findViewById(R.id.añoP);
-        generoP = findViewById(R.id.generoP);
-        directorP = findViewById(R.id.directorP);
-        insertarP = findViewById(R.id.insertarP);
-        eliminarP = findViewById(R.id.eliminarP);
+        setContentView(R.layout.activity_main2);
+        nombreD = findViewById(R.id.nombreD);
+        edadD = findViewById(R.id.edadD);
+        generoD = findViewById(R.id.generoD);
+        experienciaD = findViewById(R.id.añosD);
+        insertarD = findViewById(R.id.insertarD);
+        eliminarD = findViewById(R.id.eliminarD);
         servicioRealtime = FirebaseDatabase.getInstance().getReference();
-        lista = findViewById(R.id.lista);
+        lista1 = findViewById(R.id.listaD);
 
-        insertarP.setOnClickListener(new View.OnClickListener() {
+        insertarD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertarP();
+                insertarDirector();
             }
         });
 
-        eliminarP.setOnClickListener(new View.OnClickListener() {
+        eliminarD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eliminarPeli();
+                eliminarDirector();
             }
         });
     }
 
     protected void onStart(){
-        consultarP();
+        consultarD();
         super.onStart();
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.opciones_d,menu);
+        getMenuInflater().inflate(R.menu.opciones_p,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.adminDirectores:
-                Intent consultarP = new Intent(this,Main2Activity.class);
+            case R.id.adminPeliculas:
+                Intent consultarP = new Intent(this,MainActivity.class);
                 startActivity(consultarP);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void consultarP(){
-        servicioRealtime.child("peliculas").addValueEventListener(new ValueEventListener() {
+    private void consultarD(){
+        servicioRealtime.child("directores").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                datosConsultaPelicula = new ArrayList<>();
+                datosConsultaDirectores = new ArrayList<>();
 
                 if(dataSnapshot.getChildrenCount()<=0){
-                    Toast.makeText(MainActivity.this,"No hay datos que mostrar",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Main2Activity.this,"No hay datos que mostrar",Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 for(final DataSnapshot snap : dataSnapshot.getChildren()){
-                    servicioRealtime.child("peliculas").child(snap.getKey()).addValueEventListener(
+                    servicioRealtime.child("directores").child(snap.getKey()).addValueEventListener(
                             new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Pelicula u = dataSnapshot.getValue(Pelicula.class);
+                                    Director d = dataSnapshot.getValue(Director.class);
 
-                                    if(u!=null){
-                                        datosConsultaPelicula.add(u);
+                                    if(d!=null){
+                                        datosConsultaDirectores.add(d);
                                     }
                                     cargarSelect();
                                 }
@@ -126,73 +126,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cargarSelect(){
-        if (datosConsultaPelicula.size()==0) return;
-        String nombres[] = new String[datosConsultaPelicula.size()];
+        if (datosConsultaDirectores.size()==0) {
+            return;
+        }
+        String nombres[] = new String[datosConsultaDirectores.size()];
 
         for(int i = 0; i<nombres.length; i++){
-            Pelicula u = datosConsultaPelicula.get(i);
-            nombres[i] = u.titulo+"  -  "+u.año;
+            Director p = datosConsultaDirectores.get(i);
+            nombres[i] = p.nombre;
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, nombres);
-        lista.setAdapter(adapter);
+        lista1.setAdapter(adapter);
 
-        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lista1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder alerta = new AlertDialog.Builder(MainActivity.this);
-                final View peliculaD = getLayoutInflater().inflate(R.layout.pelicula,null);
-                Pelicula p = datosConsultaPelicula.get(position);
-                TextView P_titulo = peliculaD.findViewById(R.id.tituloPelicula);
-                TextView P_año = peliculaD.findViewById(R.id.añoPelicula);
-                TextView P_genero = peliculaD.findViewById(R.id.generoPelicula);
-                TextView P_director = peliculaD.findViewById(R.id.directorPelicula);
+                AlertDialog.Builder alerta = new AlertDialog.Builder(Main2Activity.this);
+                final View directorD = getLayoutInflater().inflate(R.layout.director,null);
+                Director d = datosConsultaDirectores.get(position);
+                TextView D_nombre = directorD.findViewById(R.id.nombreDirector);
+                TextView D_edad = directorD.findViewById(R.id.edadDirector);
+                TextView D_genero = directorD.findViewById(R.id.generoDirector);
+                TextView D_años = directorD.findViewById(R.id.experienciaDirector);
 
-                P_titulo.setText(p.titulo);
-                P_año.setText(p.año);
-                P_genero.setText(p.genero);
-                P_director.setText(p.director);
+                D_nombre.setText(d.nombre);
+                D_edad.setText(d.edad);
+                D_genero.setText(d.generoPrincipal);
+                D_años.setText(d.añosExperiencia);
 
-                alerta.setTitle("INFORMACION").setMessage("Datos de película")
-                        .setView(peliculaD)
+                alerta.setTitle("INFORMACION").setMessage("Datos del director")
+                        .setView(directorD)
                         .setPositiveButton("OK",null)
                         .show();
             }
         });
     }
 
-    private void eliminarPeli(){
+    private void eliminarDirector(){
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        final EditText tituloE = new EditText(this);
-        tituloE.setHint("No debe quedar vacío");
+        final EditText nombreD = new EditText(this);
 
         alerta.setTitle("ATENCION")
-                .setMessage("Nombre de película a borrar:")
-                .setView(tituloE)
+                .setMessage("Nombre del director a eliminar:")
+                .setView(nombreD)
                 .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(tituloE.getText().toString().isEmpty()){
-                            Toast.makeText(MainActivity.this, "El campo esta vacío",Toast.LENGTH_SHORT).show();
+                        if(nombreD.getText().toString().isEmpty()){
+                            Toast.makeText(Main2Activity.this, "El campo esta vacío",Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        eliminarPelicula(tituloE.getText().toString());
+                        eliminarDirector1(nombreD.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancelar",null)
                 .show();
     }
 
-    private void eliminarPelicula(String titulo){
+    private void eliminarDirector1(String nombre){
 
-        Query RazaQuery = servicioRealtime.child("peliculas").orderByChild("titulo").equalTo(titulo);
+        Query RazaQuery = servicioRealtime.child("directores").orderByChild("nombre").equalTo(nombre);
         RazaQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
                     appleSnapshot.getRef().removeValue();
                 }
-                Toast.makeText(MainActivity.this,"Se eliminó la película correctamente",Toast.LENGTH_LONG).show();
+                Toast.makeText(Main2Activity.this,"Se eliminó el director correctamente",Toast.LENGTH_LONG).show();
+                consultarD();
             }
 
             @Override
@@ -202,23 +204,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void insertarP(){
-        String titulo = tituloP.getText().toString();
-        if(titulo.isEmpty()){
-            Toast.makeText(MainActivity.this,"Al menos introduzca el título de la película a insertar",Toast.LENGTH_LONG).show();
+    private void insertarDirector(){
+        String nombre = nombreD.getText().toString();
+        if(nombre.isEmpty()){
+            Toast.makeText(Main2Activity.this,"Al menos introduzca el nombre del director a insertar",Toast.LENGTH_LONG).show();
             return;
         }
-        Pelicula peli = new Pelicula(titulo,añoP.getText().toString(),generoP.getText().toString(),directorP.getText().toString());
-        servicioRealtime.child("peliculas").push().setValue(peli).addOnSuccessListener(new OnSuccessListener<Void>() {
+        Director peli = new Director(nombre,edadD.getText().toString(),generoD.getText().toString(),experienciaD.getText().toString());
+        servicioRealtime.child("directores").push().setValue(peli).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(MainActivity.this,"Se insertó la película correctamente",Toast.LENGTH_LONG).show();
-                consultarP();
+                Toast.makeText(Main2Activity.this,"Se insertó un nuevo director ",Toast.LENGTH_LONG).show();
+                nombreD.setText("");
+                edadD.setText("");
+                generoD.setText("");
+                experienciaD.setText("");
+                consultarD();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this,"Un error ocurrió al intentar registrar la película",Toast.LENGTH_LONG).show();
+                Toast.makeText(Main2Activity.this,"Un error ocurrió al intentar insertar un nuevo director",Toast.LENGTH_LONG).show();
             }
         });
     }

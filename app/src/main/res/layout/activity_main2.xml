@@ -8,38 +8,37 @@
     android:padding="10dp"
     tools:context=".MainActivity">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Nombre"
+        android:id="@+id/nombreD"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
         android:layout_marginBottom="10dp"
-        android:hint="Título"
-        android:id="@+id/tituloP"/>
+        android:hint="Edad"
+        android:id="@+id/edadD"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
         android:layout_marginBottom="10dp"
-        android:hint="Año"
-        android:id="@+id/añoP"/>
+        android:hint="Genero Principal"
+        android:id="@+id/generoD"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
         android:layout_marginBottom="10dp"
-        android:hint="Genero"
-        android:id="@+id/generoP"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:layout_marginBottom="10dp"
-        android:hint="Director"
-        android:id="@+id/directorP"/>
+        android:hint="Años de Experiencia"
+        android:id="@+id/añosD"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -53,21 +52,21 @@
             android:layout_height="wrap_content"
             android:text="INSERTAR"
             android:layout_marginHorizontal="5dp"
-            android:id="@+id/insertarP"/>
+            android:id="@+id/insertarD"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ELIMINAR"
             android:layout_marginHorizontal="5dp"
-            android:id="@+id/eliminarP"/>
+            android:id="@+id/eliminarD"/>
 
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lista de películas"
+        android:text="Lista de directores"
         android:textSize="20dp"
         android:layout_marginBottom="10dp"
         android:gravity="center"
@@ -76,7 +75,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lista"/>
+        android:id="@+id/listaD"/>
 
 
 </LinearLayout>
